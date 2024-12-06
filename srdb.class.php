@@ -247,29 +247,35 @@ class icit_srdb {
 	public function __construct( $args ) {
 
 		$args = array_merge( array(
-			'name' 				=> '',
-			'user' 				=> '',
-			'pass' 				=> '',
-			'host' 				=> '',
+			'name'              => '',
+			'user'              => '',
+			'pass'              => '',
+			'host'              => '',
 			'port'              => 3306,
-			'search' 			=> '',
-			'replace' 			=> '',
-			'tables'			=> array(),
-			'exclude_cols' 		=> array(),
-			'include_cols' 		=> array(),
-			'dry_run' 			=> true,
-			'regex' 			=> false,
-			'pagesize' 			=> 50000,
-			'alter_engine' 		=> false,
-			'alter_collation' 	=> false,
-			'verbose'			=> false
+			'search'            => '',
+			'replace'           => '',
+			'tables'            => array(),
+			'exclude_cols'      => array(),
+			'include_cols'      => array(),
+			'dry_run'           => true,
+			'regex'             => false,
+			'pagesize'          => 50000,
+			'alter_engine'      => false,
+			'alter_collation'   => false,
+			'verbose'           => false,
+			'handle_exceptions' => true,
+			'handle_errors'     => true,
 		), $args );
 
-		// handle exceptions
-		set_exception_handler( array( $this, 'exceptions' ) );
+		if ( $args['handle_exceptions'] ) {
+			// handle exceptions
+			set_exception_handler( array( $this, 'exceptions' ) );
+		}
 
-		// handle errors
-		set_error_handler( array( $this, 'errors' ), E_ERROR | E_WARNING );
+		if ( $args['handle_errors'] ) {
+			// handle errors
+			set_error_handler( array( $this, 'errors' ), E_ERROR | E_WARNING );
+		}
 
 		// Setting this so that mb_split works correctly.
 		// BEAR IN MIND that this affects the handling of strings INTERNALLY rather than
@@ -375,7 +381,7 @@ class icit_srdb {
 
 
 	public function errors( $no, $message, $file, $line ) {
-		echo $message . "\n";
+		echo $message . " $no $file:$line\n";
 	}
 
 
